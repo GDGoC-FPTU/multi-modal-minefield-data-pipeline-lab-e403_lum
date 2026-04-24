@@ -1,13 +1,27 @@
-# ==========================================
-# ROLE 3: OBSERVABILITY & QA ENGINEER
-# ==========================================
-# Task: Implement quality gates to reject corrupt data or logic discrepancies.
+import re
+
+
+_TOXIC_SUBSTRINGS = (
+    "null pointer exception",
+    "stack trace:",
+    "segmentation fault",
+)
+
 
 def run_quality_gate(document_dict):
-    # TODO: Reject documents with 'content' length < 20 characters
-    # TODO: Reject documents containing toxic/error strings (e.g., 'Null pointer exception')
-    # TODO: Flag discrepancies (e.g., if tax calculation comment says 8% but code says 10%)
-    
-    # Return True if pass, False if fail.
-    
+    content = document_dict.get("content") or ""
+    if len(content) < 20:
+        return False
+
+    lower = content.lower()
+    for toxic in _TOXIC_SUBSTRINGS:
+        if toxic in lower:
+            return False
+
+    meta = document_dict.get("source_metadata") or {}
+    if document_dict.get("source_type") == "Code" and meta.get("vat_comment_vs_code_discrepancy"):
+        # Lab: flag misleading VAT note — keep document but ensure it is explicit in content
+        if "8%" not in content or "10%" not in content:
+            return False
+
     return True
