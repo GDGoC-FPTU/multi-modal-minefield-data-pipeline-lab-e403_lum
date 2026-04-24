@@ -9,14 +9,11 @@ from datetime import datetime
 # This is v1. Note: A breaking change is coming at 11:00 AM!
 
 class UnifiedDocument(BaseModel):
-    # TODO: Define the v1 schema. 
-    # Suggested fields: document_id, content, source_type, author, timestamp, metadata
-    
     document_id: str
     content: str
-    source_type: str # e.g., 'PDF', 'Video', 'HTML', 'CSV', 'Code'
+    source_type: str # e.g., 'PDF', 'Transcript', 'HTML', 'CSV', 'Code'
     author: Optional[str] = "Unknown"
-    timestamp: Optional[datetime] = None
+    timestamp: Optional[str] = None # Using string for simplicity in JSON serialization
     
-    # You might want a dict for source-specific metadata
+    # Source-specific metadata
     source_metadata: dict = Field(default_factory=dict)
